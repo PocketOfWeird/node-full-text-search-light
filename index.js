@@ -77,7 +77,7 @@ FullTextSearchLight.loadSync = function (path) {
 };
 
 FullTextSearchLight.prototype.save = function (path, callback) {
-    bjf.write(path, this)
+    bfj.write(path, this)
     .then(function(){
       callback();
     })
@@ -87,7 +87,7 @@ FullTextSearchLight.prototype.save = function (path, callback) {
 };
 
 FullTextSearchLight.prototype.saveSync = function (path) {
-  bjf.write(path, this)
+  bfj.write(path, this)
   .then(function(){
     return;
   })
