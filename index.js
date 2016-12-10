@@ -1,7 +1,7 @@
 'use strict';
 
 var debug = require('debug');
-var jsonfile = require('jsonfile');
+var bfj = require('bfj');
 var merge = require('merge');
 var debug = debug('full-text-search-light');
 
@@ -43,44 +43,54 @@ FullTextSearchLight.prototype.init = function () {
 
 
 FullTextSearchLight.load = function (path, callback) {
-    jsonfile.readFile(path, null, function (error, dataObject) {
-
-        if (error) {
-            callback(error);
-            return;
-        }
-
+    bfj.read(path)
+    .then(function (dataObject) {
         var instance = new FullTextSearchLight(dataObject.config);
         instance.indexes = dataObject.indexes;
         instance.data = dataObject.data;
         instance.data_ptr = dataObject.data_ptr;
         instance.free_slots = dataObject.free_slots;
         instance.single_data_counter = dataObject.single_data_counter;
-
         callback(null, instance);
+    })
+    .catch(function(error) {
+      if (error) {
+          callback(error);
+          return;
+      }
     });
 };
 
 FullTextSearchLight.loadSync = function (path) {
-    var dataObject = jsonfile.readFileSync(path);
+    bfj.read(path)
+    .then(function(dataObject) {
+      var instance = new FullTextSearchLight(dataObject.config);
 
-    var instance = new FullTextSearchLight(dataObject.config);
+      instance.indexes = dataObject.indexes;
+      instance.data = dataObject.data;
+      instance.data_ptr = dataObject.data_ptr;
+      instance.free_slots = dataObject.free_slots;
+      instance.single_data_counter = dataObject.single_data_counter;
 
-    instance.indexes = dataObject.indexes;
-    instance.data = dataObject.data;
-    instance.data_ptr = dataObject.data_ptr;
-    instance.free_slots = dataObject.free_slots;
-    instance.single_data_counter = dataObject.single_data_counter;
-
-    return instance;
+      return instance;
+    })
 };
 
 FullTextSearchLight.prototype.save = function (path, callback) {
-    jsonfile.writeFile(path, this, null, callback);
+    bjf.write(path, this)
+    .then(function(){
+      callback();
+    })
+    .catch(function(error) {
+      callback(error);
+    })
 };
 
 FullTextSearchLight.prototype.saveSync = function (path) {
-    jsonfile.writeFileSync(path, this);
+  bjf.write(path, this)
+  .then(function(){
+    return;
+  })
 };
 
 FullTextSearchLight.prototype.index_amount = function (amount) {

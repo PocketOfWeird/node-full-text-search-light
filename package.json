@@ -10,8 +10,8 @@
     "test/"
   ],
   "dependencies": {
+    "bfj": "^2.1.0",
     "debug": "*",
-    "jsonfile": "2.0.0",
     "merge": "1.2.0"
   },
   "devDependecies": {
